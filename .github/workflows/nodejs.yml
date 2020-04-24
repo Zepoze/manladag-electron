@@ -27,5 +27,13 @@ jobs:
     - run: npm install
     - run: npm install --save canvas
     - run: npm run electron:build:debian
+    - name: Action Release
+      uses: yakuhzi/action-release@v1.2.0
+      with:
+        # File to upload to the release
+        file: './dist/installers/electron-app_0.1.0_armhf.deb'
+        # Path to changelog file
+        changelogs: # optional
+
       env:
         CI: true
