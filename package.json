@@ -14,7 +14,7 @@
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
-    "electron:build:debian":"./node_modules/.bin/electron-rebuild;npm run electron:build;./node_modules/.bin/electron-packager . electron --platform linux --arch armv7l --out dist/ --executable-name electron-app;./node_modules/.bin/electron-installer-debian --src dist/electron-linux-armv7l/ --dest dist/installers/ --arch armhf"
+    "electron:build:debian": "./node_modules/.bin/electron-rebuild;npm run electron:build;./node_modules/.bin/electron-packager . electron --platform linux --arch armv7l --out dist/ --executable-name electron-app;./node_modules/.bin/electron-installer-debian --src dist/electron-linux-armv7l/ --dest dist/installers/ --arch armhf"
   },
   "main": "./dist_electron/index.js",
   "dependencies": {
@@ -22,7 +22,6 @@
     "@manladag/scanmanga": "^1.0.0",
     "@manladag/source": "^1.0.10",
     "@manladag/types": "^1.0.0",
-    "canvas": "^2.6.1",
     "core-js": "^3.6.4",
     "jsdom": "^16.2.2",
     "vue": "^2.6.11",

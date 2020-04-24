@@ -25,6 +25,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
+    - run: npm install --save canvas
     - run: npm run electron:build:debian
       env:
         CI: true
