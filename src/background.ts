@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, Menu } from 'electron'
 import {
   createProtocol,
   /* installVueDevtools */
@@ -10,17 +10,16 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 require('./manladagProcess')
 
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win: BrowserWindow | null
+let win: BrowserWindow|null
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600, webPreferences: {
+  win = new BrowserWindow({ width: 800, height: 600,webPreferences: {
     nodeIntegration: true
   } })
 
@@ -37,6 +36,7 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
+  
 }
 
 // Quit when all windows are closed.

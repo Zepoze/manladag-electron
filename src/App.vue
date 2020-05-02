@@ -2,9 +2,35 @@
   <v-app>
     <v-navigation-drawer
       app
-      v-model="drawer"
-      clipped
+      right
+      :value="drawer && Object.keys(downloadsState).length>0"
     >
+      <v-subheader>Processing</v-subheader>
+      <v-list>
+        <list-item-download-viewver v-for="(n,key,index) in downloadsState" :downloadKey="key" :key="key+index"/>
+      </v-list>
+    </v-navigation-drawer>
+    <v-navigation-drawer
+      app
+      clipped
+      permanent
+    >
+      <v-fab-transition>
+        <v-btn
+          v-if="Object.values(downloadsState).length>0"
+          color="pink"
+          fab
+          dark
+          small
+          absolute
+          bottom
+          right
+          @click="drawer = !drawer"
+          class="mb-7"
+        >
+          <v-icon>mdi-download</v-icon>
+        </v-btn>
+      </v-fab-transition>
       <v-list dense flat>
         <v-subheader>Sources</v-subheader>
           <v-list-item
@@ -29,19 +55,33 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar
-      app
-      clipped-left
-      color="primary"
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>Application</v-toolbar-title>
-    </v-app-bar>
+    <v-dialog v-model="dialog_processing" persistent max-width="290">
+      <v-card>
+        <v-card-title>Wait plzzzzzzzzz</v-card-title>
+        <v-card-text>
+          <v-progress-circular indeterminate/>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <v-content>
-        <router-view />
+        <router-view @dialog-processing="dialogProcessing"/>
+      <v-btn @click="test_text =!test_text">gfhj</v-btn>
     </v-content>
-
+    
+    <notifications group="foo" position="bottom right" animation-type="velocity">
+      <template slot="body" slot-scope="props">
+        <v-alert :type="props.item.type" border="left">
+          <a class="title">
+            {{props.item.title}}
+          </a>
+          <a class="close" @click="props.close">
+            <i class="fa fa-fw fa-close"></i>
+          </a>
+          <div v-html="props.item.text"></div>
+        </v-alert>
+      </template>
+    </notifications>
     <v-footer app>
       <span>&copy; 2019</span>
     </v-footer>
@@ -50,31 +90,59 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
-import { mapState } from 'vuex'
+import HelloWorld from '@/components/HelloWorld.vue'
+import ListItemDownloadViewver from '@/components/ListItemDownloadViewver.vue'
+import { mapState, createNamespacedHelpers } from 'vuex'
 import {ipcRenderer,remote} from "electron"
+
+const Velocity = require('velocity-animate')
+
+const mapStateDownload = createNamespacedHelpers('download').mapState
 
 export default Vue.extend({
   name: 'App',
 
   components: {
     HelloWorld,
+    ListItemDownloadViewver
   },
 
   data: () => ({
     drawer:false,
-    model: 1
+    model: 1,
+    dialog_processing:false,
+    test_text: true
   }),
+  methods: {
+    dialogProcessing(e:boolean) {
+      this.dialog_processing = e
+    },
+    notifyy() {
+      const tabtmp = Object.keys(this.$store.state.download.downloadsState)
+      this.$store.commit('download/delete', tabtmp[tabtmp.length-1])
+    },
+    beforeEnter(el:any) {
+      el.style.opacity = 0
+      el.style.scale = 0
+    },
+    beforeLeave(el:any) {
+      el.style.opacity = 1
+      el.style.scale = 1
+    },
+    enter(el:HTMLBaseElement, done:any) {
+      Velocity(el, { opacity: 1, scale: 1 }, { duration: 300, complete: done })
+    },
+    leave(el:HTMLBaseElement, done:any) {
+      Velocity(el, { opacity: 0, scale: 0 }, { duration: 300, complete: done })
+    }
+  },
   computed: {
-    ...mapState(["sources"])
+    ...mapState(["sources"]),
+    ...mapStateDownload(['downloadsState'])
   },
   mounted() {
-    
-    ipcRenderer.on('chapterAvailable',(event,args) => {
-      this.$nextTick(()=> {
-        this.$store.commit('addAvailableChapter',args)
-      })
-    })
+    console.log("mounted")
+    console.log(remote.app.getPath('cache'))
   },
   created() {
     this.$vuetify.theme.dark = true
