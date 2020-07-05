@@ -12,7 +12,7 @@ const scanmanga:source = require('@manladag/scanmanga').Source
 const ManladagSources:{[key:string]: ManladagSource} = {}
 
 const tm:sourceRender[] = ((tab:source[]) => tab.map( s => {
-  const key = `${s.site}-${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`
+  const key = `${s.site}`
   ManladagSources[key] = new ManladagSource(s)
   return {
     site: s.site,
@@ -21,7 +21,7 @@ const tm:sourceRender[] = ((tab:source[]) => tab.map( s => {
       const tmp:{[key:string]:any} = {}
       const keys:string[] = Object.keys(s.mangas)
       Object.values(s.mangas).forEach((e,i) => {
-        tmp[keys[i]] = {name: e.name,key: keys[i],chapters: {},processing:{ lastChapter:false,chapters:[]} }
+        tmp[keys[i]] = {name: e.name,key: keys[i],chapters: {},processing:{ lastChapter:false,chapters:[]}, cover: 'https://picsum.photos/200' }
       })
       return tmp
     })(),
@@ -95,7 +95,7 @@ ipcMain.on("getSources",(event,args) => {
 
 function getLastChapter(event:Electron.IpcMainEvent,{ source_key, manga_key}:any) {
   const ms = ManladagSources[source_key]
-  
+  event.reply('manga-processing-last-chapter', { source_key, manga_key, data: true})
   ms.getLastChapter(ms.mangas[manga_key])
   .then(
     (chapter) => {
@@ -111,7 +111,9 @@ function getLastChapter(event:Electron.IpcMainEvent,{ source_key, manga_key}:any
         title: e.name === 'RequestError'? 'Network Error ?':'Error'
       })
     }
-  )
+  ).finally(() => {
+    event.reply('manga-processing-last-chapter', { source_key, manga_key, data: false})
+  })
   
 }
 
@@ -180,3 +182,4 @@ ipcMain.on("download-chapter",async (event,{source_key,manga_key,chapter,process
 
   console.log('realyfinish')
 })
+

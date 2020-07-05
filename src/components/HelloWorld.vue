@@ -88,14 +88,22 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-row>
+      <image-cache src="https://picsum.photos/200" cache-key="test"/>
+    </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
   import Vue from 'vue'
+  import ImageCache from '@/components/ImageCache.vue'
 
   export default Vue.extend({
     name: 'HelloWorld',
+
+    components: {
+      ImageCache
+    },
 
     data: () => ({
       ecosystem: [

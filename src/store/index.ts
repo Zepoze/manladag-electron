@@ -11,6 +11,9 @@ const Store = new Vuex.Store({
     test: 3
   },
   mutations: {
+    mangaProcessingLastChaper(state,{ source_key,manga_key,data}) {
+      state.sources[source_key].mangas[manga_key].processing.lastChapter = data
+    },
     getSources(state, s) {
       state.sources = s
     },
@@ -46,6 +49,11 @@ ipcRenderer.on('notification-error-chapter', (event,{title, text, type, duration
     group:'foo',
     duration: 20000
   })
+})
+
+ipcRenderer.on('manga-processing-last-chapter',(event,args) => {
+  Store.commit('mangaProcessingLastChaper',args)
+  //console.log(args)
 })
 
 ipcRenderer.send('download-chapter-set-listeners')

@@ -16,10 +16,14 @@
       "webpack-env",
       "vuetify"
     ],
+    "typeRoots": [
+      "./node_modules/@manladag/source/dist/types"
+    ],
     "paths": {
       "@/*": [
         "src/*"
-      ]
+      ],
+      
     },
     "lib": [
       "esnext",
@@ -37,5 +41,6 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  
 }

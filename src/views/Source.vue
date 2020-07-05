@@ -25,7 +25,7 @@
             <v-card-title><span :class="[n.name.length >10 ? 'subtitle-2 ':'subtitle-1']">{{ n.name }}</span></v-card-title><v-card-subtitle> {{ ((max=
               Math.max(
                 ...chaptersAvailable(n.chapters)
-              ))>=0)? max : ''}}</v-card-subtitle>
+              ))>=0)? max : n.processing.lastChapter ? 'searching':''}}</v-card-subtitle>
         </v-card>
       </v-col>
       </template>

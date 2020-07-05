@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu } from 'electron'
+import { app, protocol, BrowserWindow, Menu, ipcMain } from 'electron'
 import {
   createProtocol,
   /* installVueDevtools */
@@ -91,3 +91,10 @@ if (isDevelopment) {
     })
   }
 }
+
+ipcMain.on('new', function (e, data) {
+  let newChild:BrowserWindow|null = new BrowserWindow({ width: 400, height: 320, webPreferences: {webSecurity: false} })
+  newChild.on('close', function () { newChild = null })
+  createProtocol('app')
+  newChild.loadURL(`app://./viewver.html`)
+})

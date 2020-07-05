@@ -7,7 +7,9 @@
     >
       <v-subheader>Processing</v-subheader>
       <v-list>
+        <v-scale-transition group leave-absolute>
         <list-item-download-viewver v-for="(n,key,index) in downloadsState" :downloadKey="key" :key="key+index"/>
+        </v-scale-transition>
       </v-list>
     </v-navigation-drawer>
     <v-navigation-drawer
@@ -66,7 +68,7 @@
 
     <v-content>
         <router-view @dialog-processing="dialogProcessing"/>
-      <v-btn @click="test_text =!test_text">gfhj</v-btn>
+      <v-btn @click="notifyy">gfhj</v-btn>
     </v-content>
     
     <notifications group="foo" position="bottom right" animation-type="velocity">
@@ -118,8 +120,7 @@ export default Vue.extend({
       this.dialog_processing = e
     },
     notifyy() {
-      const tabtmp = Object.keys(this.$store.state.download.downloadsState)
-      this.$store.commit('download/delete', tabtmp[tabtmp.length-1])
+      ipcRenderer.send('new')
     },
     beforeEnter(el:any) {
       el.style.opacity = 0
@@ -142,7 +143,6 @@ export default Vue.extend({
   },
   mounted() {
     console.log("mounted")
-    console.log(remote.app.getPath('cache'))
   },
   created() {
     this.$vuetify.theme.dark = true

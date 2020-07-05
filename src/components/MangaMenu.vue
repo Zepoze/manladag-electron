@@ -6,33 +6,45 @@
       </v-btn>
     </template>
     <v-list>
-        <v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
           <v-list-item-title>{{ manga.name }}</v-list-item-title>
-        </v-list-item>
-        <v-divider/>
-        <v-list-item @click="test">
-          <v-list-item-content>
-            <v-list-item-title>
-              Download
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              The last chapter {{ lastChapter }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-icon>
-            <v-icon>mdi-download</v-icon>
-          </v-list-item-icon>
-        </v-list-item>
-      </v-list>
+          <v-list-item-subtitle>de</v-list-item-subtitle>
+          <v-fab-transition>
+            <custom-loading absolute right :size="50" v-if="manga.processing.lastChapter"/>
+          </v-fab-transition>
+        </v-list-item-content>
+      </v-list-item>
+      <v-divider/>
+      <v-scale-transition>
+      <v-list-item @click="test" v-if="lastChapter>=0">
+        <v-list-item-content>
+          <v-list-item-title>
+            Download
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            The last chapter {{ lastChapter }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-icon>
+          <v-icon>mdi-download</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+      </v-scale-transition>
+    </v-list>
   </v-menu>
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import CustomLoading from '@/components/Loading.vue'
 import { ipcRenderer } from "electron"
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapGetters} = createNamespacedHelpers('download') 
 export default Vue.extend({
   name:"MangaMenu",
+  components: {
+    CustomLoading
+  },
   props: {
     sourceKey: 
     {
